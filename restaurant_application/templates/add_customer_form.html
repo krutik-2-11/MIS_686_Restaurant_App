@@ -1,0 +1,32 @@
+<!-- templates/add_customer_form.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Customer</title>
+</head>
+<body>
+    <h1>Add New Customer</h1>
+    <form method="post" action="http://127.0.0.1:5000/add-customer">
+        <label for="CustomerID">ID:</label>
+        <input type="number" id="CustomerID" name="CustomerID" required>
+
+        <label for="FirstName">FirstName:</label>
+        <input type="text" id="FirstName" name="FirstName" required>
+
+        <label for="LastName">LastName:</label>
+        <input type="text" id="LastName" name="LastName" required>
+
+        <label for="Email">Email:</label>
+        <input type="text" id="Email" name="Email" required>
+
+        <label for="Phone">Phone:</label>
+        <input type="text" id="Phone" name="Phone" required>
+
+        <button type="submit">Add Customer</button>
+    </form>
+</body>
+</html>

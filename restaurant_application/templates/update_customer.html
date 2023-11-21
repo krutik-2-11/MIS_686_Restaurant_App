@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Customer</title>
+</head>
+<body>
+    <h1>Update Customer</h1>
+    <form method="POST">
+        <!-- Your form fields go here, pre-filled with the existing customer data -->
+        CustomerID: <input type="text" name="CustomerID" value="{{ customer.CustomerID }}" required><br>
+        FirstName: <input type="text" name="FirstName" value="{{ customer.FirstName }}" required><br>
+        LastName: <input type="text" name="LastName" value="{{ customer.LastName }}" required><br>
+        Email: <input type="email" name="Email" value="{{ customer.Email }}" required><br>
+        Phone: <input type="text" name="Phone" value="{{ customer.Phone }}" required><br>
+        <input type="submit" value="Update Customer">
+    </form>
+</body>
+</html>
