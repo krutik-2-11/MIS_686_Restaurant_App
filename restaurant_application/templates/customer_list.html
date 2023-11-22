@@ -8,6 +8,7 @@
 </head>
 <body>
     <h1>Customer List</h1>
+    <a href="{{ url_for('add_customer_form') }}">Add New Customer</a>
     <table>
         <thead>
             <tr>
@@ -38,6 +39,6 @@
             {% endfor %}
         </tbody>
     </table>
-    <a href="{{ url_for('add_customer_form') }}">Add New Customer</a>
+    
 </body>
 </html>

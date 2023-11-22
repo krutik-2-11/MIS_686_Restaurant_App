@@ -30,11 +30,54 @@ class Customer(db.Model):
         return f'<Customer {self.CustomerID} - {self.FirstName} {self.LastName}>'
 
 
+# Define your model for Reservations
+class Reservation(db.Model):
+    ReservationID = db.Column(db.Integer, primary_key=True)
+    ReservationTime = db.Column(db.Time, nullable=False)
+    ReservationDate = db.Column(db.Date, nullable=False)
+    NumGuests = db.Column(db.Integer, nullable=False)
+    CustomerID = db.Column(db.Integer, db.ForeignKey('Customers.CustomerID'), nullable=False)
+    customer = db.relationship('Customer', backref=db.backref('reservations', lazy=True))
+
+    __tablename__ = 'Reservations'
+
+    def __repr__(self):
+        return f'<Reservation {self.ReservationID} - Time: {self.ReservationTime}, Date: {self.ReservationDate}, Guests: {self.NumGuests}>'
+
+
+# Define your model for Feedback
+class Feedback(db.Model):
+    FeedbackID = db.Column(db.Integer, primary_key=True)
+    FeedbackDate = db.Column(db.Date, nullable=False)
+    FeedbackText = db.Column(db.Text, nullable=False)
+    CustomerID = db.Column(db.Integer, db.ForeignKey('Customers.CustomerID'), nullable=False)
+    customer = db.relationship('Customer', backref=db.backref('feedbacks', lazy=True))
+    OrderID = db.Column(db.Integer, nullable=False)
+
+    __tablename__ = 'Feedback'
+
+    def __repr__(self):
+        return f'<Feedback {self.FeedbackID} - Date: {self.FeedbackDate}, Text: {self.FeedbackText}, OrderID: {self.OrderID}>'
+
+class MenuCat(db.Model):
+    ItemName = db.Column(db.Text, primary_key=True)
+    Price = db.Column(db.Integer, nullable=False)
+    CategoryName = db.Column(db.Text, nullable=False)
+
+    __tablename__ = 'MenuCat'
+
+    def __repr__(self):
+        return f'<MenuCat {self.ItemName} - Price: {self.Price}, Text: {self.CategoryName}>'
+
+
+
 # Define your routes
 @app.route('/')
 def index():
-    return 'Hello, Flask with Flask-SQLAlchemy!'
+    # Render the template with the list of customers
+    return render_template('index.html')
 
+# Page to list all the customers
 @app.route('/custom-query')
 def custom_query():
 
@@ -51,6 +94,8 @@ def custom_query():
     # Render the template with the list of customers
     return render_template('customer_list.html', customers=customers)
 
+
+# Page to add a new customer
 @app.route('/add-customer', methods=['GET', 'POST'])
 def add_customer_form():
     if request.method == 'POST':
@@ -83,6 +128,7 @@ def add_customer_form():
 
     return render_template('add_customer_form.html')
 
+# Page to update the customer
 @app.route('/update-customer/<int:CustomerID>', methods=['GET', 'POST'])
 def update_customer(CustomerID):
     # Fetch the customer from the database using the provided customer_id
@@ -112,7 +158,7 @@ def update_customer(CustomerID):
 
     return render_template('update_customer.html', customer=customer)
 
-
+# Page to delete a customer
 @app.route('/delete-customer/<int:CustomerID>', methods=['GET', 'POST'])
 def delete_customer(CustomerID):
     # Fetch the customer from the database using the provided customer_id
@@ -137,6 +183,67 @@ def delete_customer(CustomerID):
             print(f"Error: {e}")
 
     return render_template('delete_customer.html', customer=customer)
+
+
+# Page to list all the reservations
+@app.route('/reservation-list')
+def reservation_list():
+    # Write your custom SQL query to fetch reservation details along with customer details
+    sql_query = text('SELECT Reservations.*, Customers.FirstName, Customers.LastName, Customers.Email, Customers.Phone '
+                     'FROM Reservations '
+                     'JOIN Customers ON Reservations.CustomerID = Customers.CustomerID')
+
+    result = db.session.execute(sql_query)
+
+    # Fetch the results and convert each row to a dictionary
+    rows = result.fetchall()
+    column_names = result.keys()
+    reservations = [dict(zip(column_names, row)) for row in rows]
+
+    print(reservations)
+
+    # Render the template with the list of reservations
+    return render_template('reservations.html', reservations=reservations)
+
+
+# Page to list all the feedback
+@app.route('/feedback-list')
+def feedback_list():
+    # Write your custom SQL query to fetch feedback details along with customer details
+    sql_query = text('SELECT Feedback.*, Customers.FirstName, Customers.LastName, Customers.Email, Customers.Phone '
+                     'FROM Feedback '
+                     'JOIN Customers ON Feedback.CustomerId = Customers.CustomerID')
+
+    result = db.session.execute(sql_query)
+
+    # Fetch the results and convert each row to a dictionary
+    rows = result.fetchall()
+    column_names = result.keys()
+    feedbacks = [dict(zip(column_names, row)) for row in rows]
+
+    print(feedbacks)
+
+    # Render the template with the list of feedback
+    return render_template('feedback_list.html', feedbacks=feedbacks)
+
+# Page to list all the menucatjoin
+@app.route('/MenuCatView')
+def MenuCat_View():
+    # Write your custom SQL query to fetch feedback details along with customer details
+    sql_query = text('SELECT * FROM RestaurantCo.MenuCat')
+
+    result = db.session.execute(sql_query)
+
+    # Fetch the results and convert each row to a dictionary
+    rows = result.fetchall()
+    column_names = result.keys()
+    menucatjoin = [dict(zip(column_names, row)) for row in rows]
+
+    print(menucatjoin)
+
+    # Render the template with the list of feedback
+    return render_template('menucatview.html', menucatjoin=menucatjoin)
+
 
 
 if __name__ == '__main__':

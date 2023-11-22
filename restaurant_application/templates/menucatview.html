@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu with Categories</title>
+</head>
+<body>
+    <h1>Menu with Categories</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ItemName</th>
+                <th>Price</th>
+                <th>CategoryName</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for menuc in menucatjoin %}
+                <tr>
+                    <td>{{ menuc['ItemName'] }}</td>
+                    <td>{{ menuc['Price'] }}</td>
+                    <td>{{ menuc['CategoryName'] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

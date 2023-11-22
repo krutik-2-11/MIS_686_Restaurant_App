@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation List</title>
+</head>
+<body>
+    <h1>Reservation List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ReservationID</th>
+                <th>ReservationTime</th>
+                <th>ReservationDate</th>
+                <th>NumGuests</th>
+                <th>CustomerID</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>Email</th>
+                <th>Phone</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reservation in reservations %}
+                <tr>
+                    <td>{{ reservation.ReservationID }}</td>
+                    <td>{{ reservation.ReservationTime }}</td>
+                    <td>{{ reservation.ReservationDate }}</td>
+                    <td>{{ reservation.NumGuests }}</td>
+                    <td>{{ reservation.CustomerID }}</td>
+                    <td>{{ reservation.FirstName }}</td>
+                    <td>{{ reservation.LastName }}</td>
+                    <td>{{ reservation.Email }}</td>
+                    <td>{{ reservation.Phone }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
