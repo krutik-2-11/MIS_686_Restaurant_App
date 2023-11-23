@@ -5,6 +5,80 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer List</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        a {
+            display: inline-block;
+            margin: 10px 0;
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            overflow-x: auto;
+            display: block;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        td .action-links {
+            display: flex;
+            justify-content: center;
+        }
+
+        td a {
+            margin: 0 5px;
+            padding: 8px 12px;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        td a.update {
+            background-color: #28a745; /* Green */
+        }
+
+        td a.delete {
+            background-color: #dc3545; /* Red */
+        }
+
+        td a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <h1>Customer List</h1>
@@ -28,17 +102,13 @@
                     <td>{{ customer.LastName }}</td>
                     <td>{{ customer.Email }}</td>
                     <td>{{ customer.Phone }}</td>
-                    <td>
-                        <!-- Add an update link/button -->
-                        <a href="{{ url_for('update_customer', CustomerID=customer.CustomerID) }}">Update</a>
-
-                        <!-- Add a delete link/button -->
-                        <a href="{{ url_for('delete_customer', CustomerID=customer.CustomerID) }}">Delete</a>
+                    <td class="action-links">
+                        <a href="{{ url_for('update_customer', CustomerID=customer.CustomerID) }}" class="update">Update</a>
+                        <a href="{{ url_for('delete_customer', CustomerID=customer.CustomerID) }}" class="delete">Delete</a>
                     </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
-    
 </body>
 </html>

@@ -4,13 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feedback List</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            overflow-x: auto;
+            display: block;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <h1>Feedback List</h1>
     <table>
         <thead>
             <tr>
-                <th>FeedbackID</th>
+                <th>FeedbackId</th>
                 <th>FeedbackDate</th>
                 <th>FeedbackText</th>
                 <th>CustomerID</th>
@@ -18,13 +61,12 @@
                 <th>LastName</th>
                 <th>Email</th>
                 <th>Phone</th>
-                <th>OrderID</th>
             </tr>
         </thead>
         <tbody>
             {% for feedback in feedbacks %}
                 <tr>
-                    <td>{{ feedback['FeedbackID'] }}</td>
+                    <td>{{ feedback['FeedbackId'] }}</td>
                     <td>{{ feedback['FeedbackDate'] }}</td>
                     <td>{{ feedback['FeedbackText'] }}</td>
                     <td>{{ feedback['CustomerId'] }}</td>
@@ -32,7 +74,6 @@
                     <td>{{ feedback['LastName'] }}</td>
                     <td>{{ feedback['Email'] }}</td>
                     <td>{{ feedback['Phone'] }}</td>
-                    <td>{{ feedback['OrderID'] }}</td>
                 </tr>
             {% endfor %}
         </tbody>

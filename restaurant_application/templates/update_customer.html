@@ -4,16 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Customer</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            background-color: #007BFF;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <h1>Update Customer</h1>
     <form method="POST">
         <!-- Your form fields go here, pre-filled with the existing customer data -->
-        CustomerID: <input type="text" name="CustomerID" value="{{ customer.CustomerID }}" required><br>
-        FirstName: <input type="text" name="FirstName" value="{{ customer.FirstName }}" required><br>
-        LastName: <input type="text" name="LastName" value="{{ customer.LastName }}" required><br>
-        Email: <input type="email" name="Email" value="{{ customer.Email }}" required><br>
-        Phone: <input type="text" name="Phone" value="{{ customer.Phone }}" required><br>
+        <label for="CustomerID">CustomerID:</label>
+        <input type="text" name="CustomerID" id="CustomerID" value="{{ customer.CustomerID }}" required>
+
+        <label for="FirstName">FirstName:</label>
+        <input type="text" name="FirstName" id="FirstName" value="{{ customer.FirstName }}" required>
+
+        <label for="LastName">LastName:</label>
+        <input type="text" name="LastName" id="LastName" value="{{ customer.LastName }}" required>
+
+        <label for="Email">Email:</label>
+        <input type="email" name="Email" id="Email" value="{{ customer.Email }}" required>
+
+        <label for="Phone">Phone:</label>
+        <input type="text" name="Phone" id="Phone" value="{{ customer.Phone }}" required>
+
         <input type="submit" value="Update Customer">
     </form>
 </body>

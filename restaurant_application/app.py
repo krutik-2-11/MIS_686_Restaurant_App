@@ -47,17 +47,16 @@ class Reservation(db.Model):
 
 # Define your model for Feedback
 class Feedback(db.Model):
-    FeedbackID = db.Column(db.Integer, primary_key=True)
+    FeedbackId = db.Column(db.Integer, primary_key=True)
     FeedbackDate = db.Column(db.Date, nullable=False)
     FeedbackText = db.Column(db.Text, nullable=False)
     CustomerID = db.Column(db.Integer, db.ForeignKey('Customers.CustomerID'), nullable=False)
     customer = db.relationship('Customer', backref=db.backref('feedbacks', lazy=True))
-    OrderID = db.Column(db.Integer, nullable=False)
 
     __tablename__ = 'Feedback'
 
     def __repr__(self):
-        return f'<Feedback {self.FeedbackID} - Date: {self.FeedbackDate}, Text: {self.FeedbackText}, OrderID: {self.OrderID}>'
+        return f'<Feedback {self.FeedbackId} - Date: {self.FeedbackDate}, Text: {self.FeedbackText}>'
 
 class MenuCat(db.Model):
     ItemName = db.Column(db.Text, primary_key=True)
@@ -68,8 +67,17 @@ class MenuCat(db.Model):
 
     def __repr__(self):
         return f'<MenuCat {self.ItemName} - Price: {self.Price}, Text: {self.CategoryName}>'
+    
 
+class Menu(db.Model):
+    ItemID = db.Column(db.Integer, primary_key=True)
+    ItemName = db.Column(db.Text, nullable=False)
+    Price = db.Column(db.Integer, nullable=False)
 
+    __tablename__ = 'Menu'
+
+    def __repr__(self):
+        return f'<Menu {self.ItemID} - Price: {self.Price}, Text: {self.ItemName}>'
 
 # Define your routes
 @app.route('/')
@@ -210,7 +218,7 @@ def reservation_list():
 @app.route('/feedback-list')
 def feedback_list():
     # Write your custom SQL query to fetch feedback details along with customer details
-    sql_query = text('SELECT Feedback.*, Customers.FirstName, Customers.LastName, Customers.Email, Customers.Phone '
+    sql_query = text('SELECT Feedback.FeedbackId,Feedback.CustomerId,Feedback.FeedbackDate,Feedback.FeedbackText, Customers.FirstName, Customers.LastName, Customers.Email, Customers.Phone '
                      'FROM Feedback '
                      'JOIN Customers ON Feedback.CustomerId = Customers.CustomerID')
 
@@ -244,6 +252,22 @@ def MenuCat_View():
     # Render the template with the list of feedback
     return render_template('menucatview.html', menucatjoin=menucatjoin)
 
+@app.route('/Menu')
+def Menu_View():
+    # Write your custom SQL query to fetch feedback details along with customer details
+    sql_query = text('SELECT * FROM RestaurantCo.Menu')
+
+    result = db.session.execute(sql_query)
+
+    # Fetch the results and convert each row to a dictionary
+    rows = result.fetchall()
+    column_names = result.keys()
+    menus = [dict(zip(column_names, row)) for row in rows]
+
+    print(menus)
+
+    # Render the template with the list of feedback
+    return render_template('menu.html', menus=menus)
 
 
 if __name__ == '__main__':
