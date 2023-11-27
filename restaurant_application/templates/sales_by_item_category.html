@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales by Item Category</title>
+
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        canvas {
+            margin: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Sales by Item Category</h1>
+
+    <!-- Create a canvas element to render the count of items sold plot -->
+    <canvas id="itemCountChart" width="600" height="300"></canvas>
+
+    <!-- Create a canvas element to render the total sales plot -->
+    <canvas id="totalSalesChart" width="600" height="300"></canvas>
+
+    <script>
+        // Extract data from Flask context
+        var salesData = {{ sales_by_category|tojson|safe }};
+
+        // Extract CategoryName, ItemCount, and TotalSales from the data
+        var categories = salesData.map(entry => entry.CategoryName);
+        var itemCounts = salesData.map(entry => entry.ItemCount);
+        var totalSales = salesData.map(entry => entry.TotalSales);
+
+        // Define dynamic colors for each category
+        var dynamicColors = categories.map(() => {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        });
+
+        // Create datasets for each category with dynamic colors
+        var itemCountDataset = {
+            label: 'Item Count',
+            data: itemCounts,
+            backgroundColor: dynamicColors,
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+        };
+
+        var totalSalesDataset = {
+            label: 'Total Sales',
+            data: totalSales,
+            backgroundColor: dynamicColors,
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+        };
+
+        // Get the canvas elements
+        var itemCountCtx = document.getElementById('itemCountChart').getContext('2d');
+        var totalSalesCtx = document.getElementById('totalSalesChart').getContext('2d');
+
+        // Create bar charts
+        var itemCountChart = new Chart(itemCountCtx, {
+            type: 'bar',
+            data: {
+                labels: categories,
+                datasets: [itemCountDataset]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        var totalSalesChart = new Chart(totalSalesCtx, {
+            type: 'bar',
+            data: {
+                labels: categories,
+                datasets: [totalSalesDataset]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

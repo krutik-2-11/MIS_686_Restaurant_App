@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Category View</title>
+
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Menu Category View</h1>
+
+    <!-- Create a canvas element to render the chart -->
+    <canvas id="menuCatChart" width="400" height="200"></canvas>
+
+    <script>
+        // Extract data from Flask context
+        var menucat_avg_prices = {{ menucat_avg_prices|tojson|safe }};
+
+        // Define static colors
+        var staticColors = [
+            '#FF5733', '#33FF57', '#5733FF', '#FF33A1', '#A1FF33', '#33A1FF'
+            // Add more colors as needed
+        ];
+
+        // Create datasets for each category with static colors
+        var datasets = [];
+        menucat_avg_prices.forEach((categoryData, index) => {
+            var categoryName = categoryData.CategoryName;
+            var itemCount = parseInt(categoryData.ItemCount);
+
+            datasets.push({
+                label: categoryName,
+                data: [itemCount],
+                backgroundColor: staticColors[index % staticColors.length],
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            });
+        });
+
+        // Get the canvas element
+        var ctx = document.getElementById('menuCatChart').getContext('2d');
+
+        // Create a bar chart
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Number of Items'],
+                datasets: datasets
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

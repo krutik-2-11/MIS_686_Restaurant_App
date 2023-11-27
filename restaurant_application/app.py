@@ -78,6 +78,17 @@ class Menu(db.Model):
 
     def __repr__(self):
         return f'<Menu {self.ItemID} - Price: {self.Price}, Text: {self.ItemName}>'
+    
+class Orders(db.Model):
+    OrderID = db.Column(db.Integer, primary_key=True)
+    CustomerID = db.Column(db.Text, nullable=False)
+    OrderDate = db.Column(db.Integer, nullable=False)
+    TotalAmount=db.Column(db.Integer,nullable=False)
+
+    __tablename__ = 'Orders'
+
+    def __repr__(self):
+        return f'<Menu {self.OrderID} - Price: {self.CustomerID}, Text: {self.OrderDate},Text:{self.TotalAmount}>'
 
 # Define your routes
 @app.route('/')
@@ -252,6 +263,21 @@ def MenuCat_View():
     # Render the template with the list of feedback
     return render_template('menucatview.html', menucatjoin=menucatjoin)
 
+@app.route('/menu_category_view')
+def menu_category_view():
+    # Write your custom SQL query to fetch data for visualization
+    sql_query = text('SELECT CategoryName,count(ItemName) as ItemCount FROM RestaurantCo.MenuCat group by CategoryName')
+
+    result = db.session.execute(sql_query)
+
+    # Fetch the results and convert each row to a dictionary
+    rows = result.fetchall()
+    column_names = result.keys()
+    menucat_avg_prices = [dict(zip(column_names, row)) for row in rows]
+
+    # Pass the prepared data to the template
+    return render_template('mencatview.html', menucat_avg_prices=menucat_avg_prices)
+
 @app.route('/Menu')
 def Menu_View():
     # Write your custom SQL query to fetch feedback details along with customer details
@@ -268,6 +294,46 @@ def Menu_View():
 
     # Render the template with the list of feedback
     return render_template('menu.html', menus=menus)
+
+@app.route('/sales')
+def sales():
+    # Write your custom SQL query to fetch data for visualization
+    sql_query = text('SELECT sum(TotalAmount) as TA,Month(OrderDate) as OD FROM RestaurantCo.Orders group by OD')
+
+    result = db.session.execute(sql_query)
+
+    # Fetch the results and convert each row to a dictionary
+    rows = result.fetchall()
+    column_names = result.keys()
+    orders = [dict(zip(column_names, row)) for row in rows]
+
+    # Pass the prepared data to the template
+    return render_template('sales.html',orders=orders)
+
+
+
+# Page to visualize sales by item category
+@app.route('/sales-by-item-category')
+def sales_by_item_category():
+    # Write your custom SQL query to fetch data for visualization
+    sql_query = text('SELECT CategoryName, '
+                     'COUNT(ItemName) AS ItemCount, '
+                     'SUM(TotalAmount) AS TotalSales '
+                     'FROM RestaurantCo.OrderMenuView '
+                     'GROUP BY CategoryName')
+
+    result = db.session.execute(sql_query)
+
+    # Fetch the results and convert each row to a dictionary
+    rows = result.fetchall()
+    column_names = result.keys()
+    sales_by_category = [dict(zip(column_names, row)) for row in rows]
+
+    # Pass the prepared data to the template
+    return render_template('sales_by_item_category.html', sales_by_category=sales_by_category)
+
+
+
 
 
 if __name__ == '__main__':

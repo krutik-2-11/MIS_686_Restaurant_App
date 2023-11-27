@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales</title>
+
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <h1>Sales</h1>
+
+    <!-- Create a canvas element to render the chart -->
+    <canvas id="ordersChart" width="400" height="200"></canvas>
+
+    <script>
+        // Extract data from Flask context
+        var orders = {{ orders|tojson|safe }};
+
+        // Extract OrderDates and TotalAmounts from the data
+        var orderDates = orders.map(order => order.OD);
+        var totalAmounts = orders.map(order => parseInt(order.TA));
+
+        console.log(orderDates); // Add this line
+        console.log(totalAmounts); // Add this line
+
+        // Define static colors
+        var staticColors = [
+            '#FF5733', '#33FF57', '#5733FF', '#FF33A1', '#A1FF33', '#33A1FF'
+            // Add more colors as needed
+        ];
+
+        // Create datasets for each category with static colors
+        var datasets = [{
+            label: 'Total Amount',
+            data: totalAmounts,
+            backgroundColor: staticColors[0], // You can customize the color
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+        }];
+
+       // Function to convert month numbers to month names
+function getMonthName(monthNumber) {
+    const monthNames = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+
+    // Ensure the monthNumber is within a valid range
+    if (monthNumber >= 1 && monthNumber <= 12) {
+        return monthNames[monthNumber - 1];
+    } else {
+        return 'Invalid Month';
+    }
+}
+
+        // Convert OrderDates to month names
+        var monthNames = orderDates.sort((a, b) => a - b).map(date => getMonthName(date));
+
+        console.log(monthNames); // Add this line
+
+        // Get the canvas element
+        var ctx = document.getElementById('ordersChart').getContext('2d');
+
+        // Create a line chart
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: monthNames,
+                datasets: datasets
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
