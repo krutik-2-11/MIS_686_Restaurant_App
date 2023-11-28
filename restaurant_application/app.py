@@ -1,6 +1,10 @@
 from flask import Flask, render_template,request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine, text, inspect
+import matplotlib.pyplot as plt
+from io import BytesIO
+import base64
+from textblob import TextBlob
 
 # Define MySQL connection details
 mysql_username = 'admin'
@@ -240,10 +244,47 @@ def feedback_list():
     column_names = result.keys()
     feedbacks = [dict(zip(column_names, row)) for row in rows]
 
-    print(feedbacks)
+    # Perform sentiment analysis on feedback texts and count positive, negative, and neutral comments
+    positive_count = 0
+    negative_count = 0
+    neutral_count = 0
 
-    # Render the template with the list of feedback
-    return render_template('feedback_list.html', feedbacks=feedbacks)
+    # Add your sentiment analysis logic here using a library like TextBlob or NLTK
+    for feedback in feedbacks:
+        feedback_text = feedback['FeedbackText']
+        analysis = TextBlob(feedback_text)
+
+        # Classify the sentiment
+        if analysis.sentiment.polarity > 0:
+            positive_count += 1
+        elif analysis.sentiment.polarity < 0:
+            negative_count += 1
+        else:
+            neutral_count += 1
+
+
+    # Avoid zero values in the sizes array
+    sizes = [positive_count + 0.1, negative_count + 0.1, neutral_count + 0.1]
+
+    # Generate a pie chart
+    labels = ['Positive', 'Negative', 'Neutral']
+    colors = ['#2ecc71', '#e74c3c', '#3498db']
+    explode = (0.1, 0, 0)  # explode the 1st slice (Positive)
+
+    plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=140)
+    plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+
+    # Save the pie chart to a BytesIO object
+    chart_image = BytesIO()
+    plt.savefig(chart_image, format='png')
+    chart_image.seek(0)
+    plt.close()
+
+    # Convert BytesIO to base64-encoded string to embed in HTML
+    chart_data = base64.b64encode(chart_image.getvalue()).decode('utf-8')
+
+    # Render the template with the pie chart and list of feedback
+    return render_template('feedback_list.html', feedbacks=feedbacks, chart_data=chart_data)
 
 # Page to list all the menucatjoin
 @app.route('/MenuCatView')
@@ -331,6 +372,7 @@ def sales_by_item_category():
 
     # Pass the prepared data to the template
     return render_template('sales_by_item_category.html', sales_by_category=sales_by_category)
+
 
 
 
